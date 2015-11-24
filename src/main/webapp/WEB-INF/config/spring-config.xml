@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+	   	xmlns:tx="http://www.springframework.org/schema/tx"
+	   	xmlns:aop="http://www.springframework.org/schema/aop"
+	   	xmlns:sws="http://www.springframework.org/schema/web-services"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+							http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+							http://www.springframework.org/schema/web-services
+							http://www.springframework.org/schema/web-services/web-services-2.0.xsd
+							http://www.springframework.org/schema/tx
+ 							http://www.springframework.org/schema/tx/spring-tx.xsd
+ 							http://www.springframework.org/schema/aop
+        					http://www.springframework.org/schema/aop/spring-aop.xsd
+							http://www.springframework.org/schema/context
+							http://www.springframework.org/schema/context/spring-context-3.0.xsd
+							http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+
+	<!--<context:component-scan base-package="com.universityonline.services, com.universityonline.configuration" />-->
+	<sws:annotation-driven />
+	<tx:annotation-driven transaction-manager="txManager"/>
+
+	<!--
+		Our test service bean
+	-->
+	<bean id="AccountDetailsService" class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition" lazy-init="true">
+        <property name="schemaCollection">
+            <bean class="org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection">
+                <property name="inline" value="true" />
+                <property name="xsds">
+                    <list>
+                        <value>schemas/AccountDetailsServiceOperations.xsd</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="portTypeName" value="AccountDetailsService"/>
+        <property name="serviceName" value="AccountDetailsServices" />
+        <property name="locationUri" value="/endpoints"/>
+    </bean>
+
+	<bean id="AdministratorService" class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition" lazy-init="true">
+		<property name="schemaCollection">
+			<bean class="org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection">
+				<property name="inline" value="true" />
+				<property name="xsds">
+					<list>
+						<value>/schemas/AdministratorServiceOperations.xsd</value>
+					</list>
+				</property>
+			</bean>
+		</property>
+		<property name="portTypeName" value="AdministratorService"/>
+		<property name="serviceName" value="AdministratorServices" />
+		<property name="locationUri" value="/endpoints"/>
+	</bean>
+
+
+	<!--DATA SOURCE AND HIBERNATE CONFIGURATION-->
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		  destroy-method="close">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://localhost:5432/postgres" />
+		<property name="username" value="postgres" />
+		<property name="password" value="root" />
+	</bean>
+
+	<bean id="sessionFactory"
+		  class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="com.universityonline.domain.entities, com.universityonline.domain.persistance.converters"/>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
+				<!--<prop key="hibernate.current_session_context_class">thread</prop>-->
+				<prop key="hibernate.show_sql">false</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="txManager"
+		  class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+	<!-- ADMINISTRATOR SERVICE AND ENDPOINT-->
+
+	<bean id="administratorServiceEndpoint" class="com.universityonline.endpoints.AdministratorServiceEndpoint">
+		<property name="administratorService" ref="administratorService"/>
+	</bean>
+
+	<bean id="administratorService" class="com.universityonline.services.AdministratorServiceImpl">
+		<property name="personRepository" ref="personRepository"/>
+	</bean>
+
+	<bean id="personRepository" class="com.universityonline.repositories.PersonRepository">
+		<property name="hibernateTemplate" ref="hibernateTemplate"/>
+	</bean>
+
+
+	<!--ACCOUNT SERVICE AND ENDPOINT-->
+
+	<bean id="accountServiceEndpoint" class="com.universityonline.endpoints.AccountServiceEndpoint">
+		<property name="accountService" ref="accountService"/>
+	</bean>
+
+	<bean id="accountService" class="com.universityonline.services.AccountServiceImpl"/>
+
+</beans>

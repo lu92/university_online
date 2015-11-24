@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:annox="http://annox.dev.java.net"
+               xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd"
+               version="2.1">
+    <!--<jaxb:globalBindings>-->
+        <!--&lt;!&ndash; Use java.util.Calendar instead of javax.xml.datatype.XMLGregorianCalendar for xs:dateTime &ndash;&gt;-->
+        <!--<jaxb:javaType name="java.util.Calendar" xmlType="xs:dateTime"-->
+                       <!--parseMethod="javax.xml.bind.DatatypeConverter.parseDateTime" />-->
+
+        <!--&lt;!&ndash; Force all classes implements Serializable &ndash;&gt;-->
+        <!--<xjc:serializable uid="1" />-->
+    <!--</jaxb:globalBindings>-->
+
+    <!--&lt;!&ndash; Annotate the following classes with XmlRootElement &ndash;&gt;-->
+    <!--<jaxb:bindings schemaLocation="../StudentDetails.xsd" node="/xs:schema">-->
+        <!--<jaxb:bindings node="xs:complexType[@name='PersonType']">-->
+            <!--<annox:annotate>-->
+                <!--<annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="Student" />-->
+            <!--</annox:annotate>-->
+        <!--</jaxb:bindings>-->
+        <!--<jaxb:bindings node="xs:complexType[@name='PersonType']">-->
+            <!--<annox:annotate>-->
+                <!--<annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="Professor" />-->
+            <!--</annox:annotate>-->
+        <!--</jaxb:bindings>-->
+    <!--</jaxb:bindings>-->
+</jaxb:bindings>
